@@ -1,4 +1,3 @@
-
 package edu.farmingdale.datastoredemo.data.local
 
 import android.util.Log
@@ -23,7 +22,6 @@ class UserPreferencesRepository(
         val IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
         const val TAG = "UserPreferencesRepo"
     }
-
     val isLinearLayout: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
@@ -36,14 +34,24 @@ class UserPreferencesRepository(
         .map { preferences ->
             preferences[IS_LINEAR_LAYOUT] ?: true
         }
-
+    val isDarkTheme: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            preferences[IS_DARK_THEME] ?: false
+        }
 
     suspend fun saveLayoutPreference(isLinearLayout: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_LINEAR_LAYOUT] = isLinearLayout
         }
     }
-
     suspend fun saveThemePreference(isDarkTheme: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_DARK_THEME] = isDarkTheme

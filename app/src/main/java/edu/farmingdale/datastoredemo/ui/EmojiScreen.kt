@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.farmingdale.datastoredemo.R
 
 import edu.farmingdale.datastoredemo.data.local.LocalEmojiData
+import edu.farmingdale.datastoredemo.ui.theme.DataStoreDemoTheme
 
 /*
  * Screen level composable
@@ -54,24 +55,36 @@ fun EmojiReleaseApp(
         factory = EmojiScreenViewModel.Factory
     )
 ) {
-    EmojiScreen(
-        uiState = emojiViewModel.uiState.collectAsState().value,
-        selectLayout = emojiViewModel::selectLayout,
-    )
+    val uiState = emojiViewModel.uiState.collectAsState().value
+    DataStoreDemoTheme(darkTheme = uiState.isDarkTheme) {
+        EmojiScreen(
+            uiState = uiState,
+            selectLayout = emojiViewModel::selectLayout,
+            toggleTheme = emojiViewModel::toggleTheme
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EmojiScreen(
     uiState: EmojiReleaseUiState,
-    selectLayout: (Boolean) -> Unit
+    selectLayout: (Boolean) -> Unit,
+    toggleTheme: (Boolean) -> Unit
 ) {
     val isLinearLayout = uiState.isLinearLayout
+    val isDarkTheme = uiState.isDarkTheme
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.top_bar_name)) },
                 actions = {
+                    Switch(
+                        checked = isDarkTheme,
+                        onCheckedChange = {
+                            toggleTheme(it)
+                        }
+                    )
                     IconButton(
                         onClick = {
                             selectLayout(!isLinearLayout)
@@ -83,8 +96,6 @@ private fun EmojiScreen(
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
-
-
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.inversePrimary
@@ -145,6 +156,7 @@ fun EmojiReleaseLinearLayout(
         }
     }
 }
+
 
 @Composable
 fun EmojiReleaseGridLayout(
