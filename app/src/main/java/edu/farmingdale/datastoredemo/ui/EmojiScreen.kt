@@ -1,6 +1,7 @@
 package edu.farmingdale.datastoredemo.ui
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -116,7 +117,7 @@ fun EmojiReleaseLinearLayout(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    val cntxt = LocalContext.current
+    val context = LocalContext.current
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
@@ -127,20 +128,19 @@ fun EmojiReleaseLinearLayout(
             key = { e -> e }
         ) { e ->
             Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = MaterialTheme.shapes.medium
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.clickable {
+                    Toast.makeText(context, "Emoji: $e", Toast.LENGTH_SHORT).show()
+                }
             ) {
-                    Text(
-                        text = e, fontSize = 50.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensionResource(R.dimen.padding_medium)),
-                        textAlign = TextAlign.Center
-                    )
-
-
+                Text(
+                    text = e, fontSize = 50.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_medium)),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -151,6 +151,7 @@ fun EmojiReleaseGridLayout(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
+    val context = LocalContext.current
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(3),
@@ -166,7 +167,11 @@ fun EmojiReleaseGridLayout(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
-                modifier = Modifier.height(110.dp),
+                modifier = Modifier
+                    .height(110.dp)
+                    .clickable {
+                        Toast.makeText(context, "Emoji: $e", Toast.LENGTH_SHORT).show()
+                    },
                 shape = MaterialTheme.shapes.medium
             ) {
                 Text(
